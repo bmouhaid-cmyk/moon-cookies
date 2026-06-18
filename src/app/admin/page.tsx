@@ -3,12 +3,35 @@
 import { useState } from "react";
 import { products } from "@/data/products";
 import Link from "next/link";
-import { Edit, Trash2, Plus, Loader2 } from "lucide-react";
+import { Edit, Trash2, Plus, Loader2, ArrowUp, ArrowDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [reorderingId, setReorderingId] = useState<string | null>(null);
+
+  const handleReorder = async (id: string, direction: "up" | "down") => {
+    setReorderingId(id);
+    try {
+      const res = await fetch("/api/products", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, direction }),
+      });
+
+      if (res.ok) {
+        router.refresh();
+      } else {
+        const data = await res.json();
+        if (data.error !== 'Action ignorée') alert(data.error || "Erreur lors de la réorganisation.");
+      }
+    } catch (err) {
+      alert("Erreur de connexion.");
+    } finally {
+      setReorderingId(null);
+    }
+  };
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Voulez-vous vraiment supprimer le produit "${name}" ?`)) return;
@@ -62,7 +85,7 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-choco/5">
-              {products.map((product) => (
+              {products.map((product, index) => (
                 <tr key={product.id} className="hover:bg-choco/[0.02] transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-4">
@@ -80,6 +103,24 @@ export default function AdminDashboard() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <div className="flex flex-col gap-1 mr-2 border-r border-choco/10 pr-4">
+                        <button 
+                          onClick={() => handleReorder(product.id, "up")}
+                          disabled={reorderingId !== null || index === 0}
+                          className="text-choco/40 hover:text-blue-500 disabled:opacity-30 disabled:hover:text-choco/40 transition-colors"
+                          title="Monter"
+                        >
+                          <ArrowUp size={16} />
+                        </button>
+                        <button 
+                          onClick={() => handleReorder(product.id, "down")}
+                          disabled={reorderingId !== null || index === products.length - 1}
+                          className="text-choco/40 hover:text-blue-500 disabled:opacity-30 disabled:hover:text-choco/40 transition-colors"
+                          title="Descendre"
+                        >
+                          <ArrowDown size={16} />
+                        </button>
+                      </div>
                       <Link href={`/admin/edit-product/${product.id}`} className="p-2 inline-flex text-choco/40 hover:text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="Modifier">
                         <Edit size={18} />
                       </Link>

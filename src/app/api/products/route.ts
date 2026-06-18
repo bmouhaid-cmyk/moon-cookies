@@ -13,7 +13,11 @@ export async function DELETE(request: Request) {
   return handleProductUpdate(request, 'DELETE');
 }
 
-async function handleProductUpdate(request: Request, method: 'POST' | 'PUT' | 'DELETE') {
+export async function PATCH(request: Request) {
+  return handleProductUpdate(request, 'PATCH');
+}
+
+async function handleProductUpdate(request: Request, method: 'POST' | 'PUT' | 'DELETE' | 'PATCH') {
   try {
     // 1. Check authentication
     const cookieHeader = request.headers.get('cookie') || '';
@@ -35,6 +39,21 @@ async function handleProductUpdate(request: Request, method: 'POST' | 'PUT' | 'D
       const index = updatedProducts.findIndex(p => p.id === payload.id);
       if (index === -1) return NextResponse.json({ error: 'Produit non trouvé' }, { status: 404 });
       updatedProducts.splice(index, 1);
+    } else if (method === 'PATCH') {
+      const index = updatedProducts.findIndex(p => p.id === payload.id);
+      if (index === -1) return NextResponse.json({ error: 'Produit non trouvé' }, { status: 404 });
+      
+      if (payload.direction === 'up' && index > 0) {
+        const temp = updatedProducts[index - 1];
+        updatedProducts[index - 1] = updatedProducts[index];
+        updatedProducts[index] = temp;
+      } else if (payload.direction === 'down' && index < updatedProducts.length - 1) {
+        const temp = updatedProducts[index + 1];
+        updatedProducts[index + 1] = updatedProducts[index];
+        updatedProducts[index] = temp;
+      } else {
+        return NextResponse.json({ error: 'Action ignorée' }, { status: 400 });
+      }
     }
 
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
@@ -84,7 +103,10 @@ export const products: Product[] = `;
     const newContent = fileHeader + JSON.stringify(updatedProducts, null, 2) + ';\n';
 
     // 4. Commit the new file back to GitHub
-    const commitMessage = method === 'POST' ? `Ajout du produit: ${payload.name}` : `Modification du produit: ${payload.name}`;
+    let commitMessage = `Modification du produit: ${payload.name || payload.id}`;
+    if (method === 'POST') commitMessage = `Ajout du produit: ${payload.name}`;
+    if (method === 'DELETE') commitMessage = `Suppression du produit: ${payload.id}`;
+    if (method === 'PATCH') commitMessage = `Réorganisation du produit: ${payload.id}`;
     
     const commitRes = await fetch(fileUrl, {
       method: 'PUT',
