@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { Save, AlertCircle, Plus, Trash2 } from "lucide-react";
 import { products } from "@/data/products";
+import { principalIngredients } from "@/data/ingredients";
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -75,6 +76,23 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
   const removeDetailedIngredient = (index: number) => {
     const newIngredients = detailedIngredients.filter((_, i) => i !== index);
     setDetailedIngredients(newIngredients);
+  };
+
+  const togglePrincipalIngredient = (pi: {name: string, imageUrl: string}) => {
+    const existsIndex = detailedIngredients.findIndex(i => i.name === pi.name);
+    if (existsIndex >= 0) {
+      removeDetailedIngredient(existsIndex);
+    } else {
+      // If there's an empty placeholder, replace it, otherwise append
+      const emptyIndex = detailedIngredients.findIndex(i => i.name.trim() === "" && i.imageUrl.trim() === "");
+      if (emptyIndex >= 0) {
+        const newIngredients = [...detailedIngredients];
+        newIngredients[emptyIndex] = pi;
+        setDetailedIngredients(newIngredients);
+      } else {
+        setDetailedIngredients([...detailedIngredients, pi]);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -177,8 +195,36 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-choco/10">
           <div className="flex justify-between items-center border-b border-choco/10 pb-4 mb-6">
             <h2 className="text-xl font-serif text-choco">Ingrédients Détaillés (Avec Icônes)</h2>
+          </div>
+
+          <div className="mb-8 p-5 bg-choco/5 rounded-2xl border border-choco/10">
+            <h3 className="text-sm font-medium text-choco mb-3">Sélection Rapide (Cliquez pour ajouter/retirer)</h3>
+            <div className="flex flex-wrap gap-3">
+              {principalIngredients.map((pi) => {
+                const isSelected = detailedIngredients.some(i => i.name === pi.name);
+                return (
+                  <button
+                    key={pi.name}
+                    type="button"
+                    onClick={() => togglePrincipalIngredient(pi)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all shadow-sm ${
+                      isSelected 
+                        ? 'border-[#8A5A44] bg-[#8A5A44] text-white' 
+                        : 'border-choco/20 bg-white hover:bg-choco/5 text-choco'
+                    }`}
+                  >
+                    <img src={pi.imageUrl} alt={pi.name} className="w-6 h-6 rounded-full object-cover bg-white" />
+                    <span className="text-sm font-medium">{pi.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-sm font-medium text-choco/80">Liste personnalisée (Modifiez ou ajoutez manuellement)</h3>
             <button type="button" onClick={addDetailedIngredient} className="text-blue-500 hover:text-blue-600 flex items-center gap-1 font-medium text-sm transition-colors">
-              <Plus size={16} /> Ajouter un ingrédient
+              <Plus size={16} /> Ajouter manuellement
             </button>
           </div>
           <div className="space-y-4">
