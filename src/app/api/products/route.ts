@@ -41,6 +41,7 @@ async function handleProductUpdate(request: Request, method: 'POST' | 'PUT' | 'D
     const OWNER = process.env.GITHUB_OWNER; 
     const REPO = process.env.GITHUB_REPO; 
     const PATH = process.env.GITHUB_FILE_PATH || 'src/data/products.ts'; 
+    const BRANCH = process.env.GITHUB_BRANCH || 'main';
 
     if (!GITHUB_TOKEN || !OWNER || !REPO) {
       console.warn("GitHub environment variables are missing. Simulating success for development.");
@@ -52,7 +53,7 @@ async function handleProductUpdate(request: Request, method: 'POST' | 'PUT' | 'D
 
     // 2. Fetch the current file metadata from GitHub to get the SHA
     const fileUrl = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}`;
-    const fileRes = await fetch(fileUrl, {
+    const fileRes = await fetch(`${fileUrl}?ref=${BRANCH}`, {
       headers: {
         Authorization: `Bearer ${GITHUB_TOKEN}`,
         Accept: 'application/vnd.github.v3+json',
@@ -96,6 +97,7 @@ export const products: Product[] = `;
         message: commitMessage,
         content: Buffer.from(newContent).toString('base64'),
         sha: fileData.sha,
+        branch: BRANCH,
       }),
     });
 
