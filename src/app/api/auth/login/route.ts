@@ -5,7 +5,8 @@ export async function POST(request: Request) {
     const { pin } = await request.json();
     
     // Fallback to 123456 if env variable is not set
-    const correctPin = process.env.ADMIN_PIN || '123456';
+    // WARNING: It is safer to set ADMIN_PIN in your Vercel Environment Variables!
+    const correctPin = process.env.ADMIN_PIN || '19042000';
 
     if (pin === correctPin) {
       const response = NextResponse.json({ success: true });
