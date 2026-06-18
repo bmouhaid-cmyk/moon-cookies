@@ -83,6 +83,38 @@ export default function SettingsPage() {
                 className="w-full px-4 py-3 rounded-xl border border-choco/20 bg-cream focus:outline-none focus:ring-2 focus:ring-choco/20 focus:border-choco transition-all"
               />
             </div>
+            
+            <div className="md:col-span-2 mt-4 pt-4 border-t border-choco/10">
+              <div className="flex items-center gap-3 mb-4">
+                <input
+                  type="checkbox"
+                  id="showAnnouncement"
+                  name="showAnnouncement"
+                  checked={formData.showAnnouncement}
+                  onChange={(e) => setFormData(prev => ({ ...prev, showAnnouncement: e.target.checked }))}
+                  className="w-5 h-5 accent-choco rounded"
+                />
+                <label htmlFor="showAnnouncement" className="text-sm font-medium text-choco/80 cursor-pointer">
+                  Afficher la bannière d'annonce en haut du site
+                </label>
+              </div>
+              
+              {formData.showAnnouncement && (
+                <div>
+                  <label className="block text-sm font-medium text-choco/80 mb-2">
+                    Texte de l'annonce
+                  </label>
+                  <input
+                    type="text"
+                    name="announcementText"
+                    value={formData.announcementText}
+                    onChange={handleChange}
+                    placeholder="Livraison gratuite à partir de 200 DH d'achat ! 🚚"
+                    className="w-full px-4 py-3 rounded-xl border border-choco/20 bg-cream focus:outline-none focus:ring-2 focus:ring-choco/20 focus:border-choco transition-all"
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

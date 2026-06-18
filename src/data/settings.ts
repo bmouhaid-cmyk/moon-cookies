@@ -10,6 +10,8 @@ export interface SiteSettings {
   instagramHandle: string;
   contactAddress: string;
   footerDescription: string;
+  showAnnouncement: boolean;
+  announcementText: string;
 }
 
 export const settings: SiteSettings = {
@@ -23,5 +25,7 @@ export const settings: SiteSettings = {
   instagramLink: "https://www.instagram.com/mooncookies71",
   instagramHandle: "@mooncookies71",
   contactAddress: "Casablanca, Maroc",
-  footerDescription: "L'art du cookie artisanal. Fait avec passion, cuit à la perfection pour votre plus grand plaisir."
+  footerDescription: "L'art du cookie artisanal. Fait avec passion, cuit à la perfection pour votre plus grand plaisir.",
+  showAnnouncement: true,
+  announcementText: "Livraison gratuite à partir de 200 DH d'achat ! 🚚"
 };

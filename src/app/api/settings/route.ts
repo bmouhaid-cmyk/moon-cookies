@@ -49,6 +49,8 @@ export async function POST(request: Request) {
   instagramHandle: string;
   contactAddress: string;
   footerDescription: string;
+  showAnnouncement: boolean;
+  announcementText: string;
 }
 
 export const settings: SiteSettings = `;

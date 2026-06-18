@@ -3,6 +3,7 @@ import { Playfair_Display, Dancing_Script, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
+import { settings } from "@/data/settings";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -36,6 +37,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-cream text-choco font-sans">
+        {settings.showAnnouncement && (
+          <div className="bg-choco text-cream text-center py-2 px-4 text-sm font-medium tracking-wide">
+            {settings.announcementText}
+          </div>
+        )}
         <Navbar />
         <main className="flex-1">{children}</main>
         <CartDrawer />
