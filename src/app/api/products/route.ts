@@ -87,7 +87,17 @@ async function handleProductUpdate(request: Request, method: 'POST' | 'PUT' | 'D
     const fileData = await fileRes.json();
 
     // 3. Generate the new file content
-    const fileHeader = `export interface Product {
+    const fileHeader = `export interface Ingredient {
+  name: string;
+  imageUrl: string;
+}
+
+export interface ReheatAdvice {
+  microwave?: string;
+  oven?: string;
+}
+
+export interface Product {
   id: string;
   name: string;
   price: number;
@@ -95,7 +105,9 @@ async function handleProductUpdate(request: Request, method: 'POST' | 'PUT' | 'D
   detailedDescription?: string;
   imageUrl: string;
   images?: string[];
-  ingredients?: string[];
+  ingredients?: string[]; // Kept for backwards compatibility
+  detailedIngredients?: Ingredient[];
+  reheatAdvice?: ReheatAdvice;
 }
 
 export const products: Product[] = `;

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { Save, AlertCircle } from "lucide-react";
+import { Save, AlertCircle, Plus, Trash2 } from "lucide-react";
 import { products } from "@/data/products";
 
 export default function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -24,6 +24,9 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
     ingredients: "",
   });
 
+  const [detailedIngredients, setDetailedIngredients] = useState<{name: string, imageUrl: string}[]>([]);
+  const [reheatAdvice, setReheatAdvice] = useState({ microwave: "", oven: "" });
+
   useEffect(() => {
     const product = products.find((p) => p.id === resolvedParams.id);
     if (product) {
@@ -37,6 +40,19 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
             images: product.images ? product.images.join(", ") : "",
             ingredients: product.ingredients ? product.ingredients.join(", ") : "",
         });
+        
+        if (product.detailedIngredients && product.detailedIngredients.length > 0) {
+            setDetailedIngredients(product.detailedIngredients);
+        } else {
+            setDetailedIngredients([{ name: "", imageUrl: "" }]);
+        }
+
+        if (product.reheatAdvice) {
+            setReheatAdvice({
+                microwave: product.reheatAdvice.microwave || "",
+                oven: product.reheatAdvice.oven || "",
+            });
+        }
     } else {
         setError("Produit non trouvé.");
     }
@@ -44,6 +60,21 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleDetailedIngredientChange = (index: number, field: "name" | "imageUrl", value: string) => {
+    const newIngredients = [...detailedIngredients];
+    newIngredients[index][field] = value;
+    setDetailedIngredients(newIngredients);
+  };
+
+  const addDetailedIngredient = () => {
+    setDetailedIngredients([...detailedIngredients, { name: "", imageUrl: "" }]);
+  };
+
+  const removeDetailedIngredient = (index: number) => {
+    const newIngredients = detailedIngredients.filter((_, i) => i !== index);
+    setDetailedIngredients(newIngredients);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,6 +92,11 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
           price: Number(formData.price),
           images: formData.images ? formData.images.split(",").map(i => i.trim()).filter(i => i) : undefined,
           ingredients: formData.ingredients ? formData.ingredients.split(",").map(i => i.trim()).filter(i => i) : undefined,
+          detailedIngredients: detailedIngredients.filter(i => i.name.trim() !== ""),
+          reheatAdvice: {
+            microwave: reheatAdvice.microwave.trim() || undefined,
+            oven: reheatAdvice.oven.trim() || undefined,
+          }
         }),
       });
 
@@ -120,7 +156,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
 
         {/* Media & Details */}
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-choco/10">
-          <h2 className="text-xl font-serif text-choco mb-6 border-b border-choco/10 pb-4">Images & Ingrédients</h2>
+          <h2 className="text-xl font-serif text-choco mb-6 border-b border-choco/10 pb-4">Images & Ingrédients Basiques</h2>
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-choco/80 mb-2">URL de l'image principale</label>
@@ -131,8 +167,46 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
               <input type="text" name="images" value={formData.images} onChange={handleChange} className="w-full rounded-xl border border-choco/20 px-4 py-3 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all bg-white text-choco" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-choco/80 mb-2">Ingrédients (séparés par des virgules)</label>
+              <label className="block text-sm font-medium text-choco/80 mb-2">Ingrédients Basiques (Texte simple, séparés par des virgules)</label>
               <input type="text" name="ingredients" value={formData.ingredients} onChange={handleChange} className="w-full rounded-xl border border-choco/20 px-4 py-3 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all bg-white text-choco" placeholder="ex: Farine, Sucre, Chocolat..." />
+            </div>
+          </div>
+        </div>
+
+        {/* Detailed Ingredients */}
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-choco/10">
+          <div className="flex justify-between items-center border-b border-choco/10 pb-4 mb-6">
+            <h2 className="text-xl font-serif text-choco">Ingrédients Détaillés (Avec Icônes)</h2>
+            <button type="button" onClick={addDetailedIngredient} className="text-blue-500 hover:text-blue-600 flex items-center gap-1 font-medium text-sm transition-colors">
+              <Plus size={16} /> Ajouter un ingrédient
+            </button>
+          </div>
+          <div className="space-y-4">
+            {detailedIngredients.map((ingredient, index) => (
+              <div key={index} className="flex gap-4 items-start">
+                <div className="flex-1">
+                  <input type="text" placeholder="Nom de l'ingrédient (ex: Œufs frais)" value={ingredient.name} onChange={(e) => handleDetailedIngredientChange(index, "name", e.target.value)} className="w-full rounded-xl border border-choco/20 px-4 py-3 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all bg-white text-choco mb-2" />
+                  <input type="url" placeholder="URL de l'icône/image" value={ingredient.imageUrl} onChange={(e) => handleDetailedIngredientChange(index, "imageUrl", e.target.value)} className="w-full rounded-xl border border-choco/20 px-4 py-3 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all bg-white text-choco" />
+                </div>
+                <button type="button" onClick={() => removeDetailedIngredient(index)} className="p-3 text-red-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors mt-1" title="Supprimer">
+                  <Trash2 size={20} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Reheating Advice */}
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-choco/10">
+          <h2 className="text-xl font-serif text-choco mb-6 border-b border-choco/10 pb-4">Conseils de réchauffage</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-choco/80 mb-2">Micro-ondes (ex: 10 à 15 secondes)</label>
+              <input type="text" value={reheatAdvice.microwave} onChange={(e) => setReheatAdvice(prev => ({ ...prev, microwave: e.target.value }))} className="w-full rounded-xl border border-choco/20 px-4 py-3 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all bg-white text-choco" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-choco/80 mb-2">Four (ex: 3 à 5 minutes à 160°C)</label>
+              <input type="text" value={reheatAdvice.oven} onChange={(e) => setReheatAdvice(prev => ({ ...prev, oven: e.target.value }))} className="w-full rounded-xl border border-choco/20 px-4 py-3 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 outline-none transition-all bg-white text-choco" />
             </div>
           </div>
         </div>

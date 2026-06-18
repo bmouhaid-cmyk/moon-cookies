@@ -1,3 +1,13 @@
+export interface Ingredient {
+  name: string;
+  imageUrl: string;
+}
+
+export interface ReheatAdvice {
+  microwave?: string;
+  oven?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -6,7 +16,9 @@ export interface Product {
   detailedDescription?: string;
   imageUrl: string;
   images?: string[];
-  ingredients?: string[];
+  ingredients?: string[]; // Kept for backwards compatibility
+  detailedIngredients?: Ingredient[];
+  reheatAdvice?: ReheatAdvice;
 }
 
 export const products: Product[] = [
