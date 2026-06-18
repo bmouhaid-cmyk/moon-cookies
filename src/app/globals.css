@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #FDF8F0;
+  --color-foreground: #613926;
+  
+  --color-cream: #FDF8F0;
+  --color-cream-dark: #F0E6D8;
+  
+  --color-choco: #613926;
+  --color-choco-light: #8A5A44;
+  --color-choco-dark: #3E2012;
+  
+  --color-caramel: #B07D54;
+
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
+  --font-script: var(--font-dancing);
+}
+
+@layer base {
+  body {
+    @apply bg-[var(--color-cream)] text-[var(--color-choco)] font-sans antialiased selection:bg-choco-light selection:text-cream;
+  }
+}
+
+@layer utilities {
+  .menu-border {
+    @apply border-2 border-choco rounded-[2rem] p-1 shadow-sm;
+  }
+  .menu-inner-border {
+    @apply border border-choco rounded-[1.8rem] h-full w-full;
+  }
+  .menu-card {
+    @apply bg-transparent border border-choco/30 rounded-[1rem] shadow-none;
+  }
+  .pill-price {
+    @apply bg-choco text-cream font-serif rounded-full px-6 py-2 shadow-sm;
+  }
+  .btn-primary {
+    @apply bg-choco text-cream font-serif rounded-full px-8 py-3 transition-colors hover:bg-choco-light;
+  }
+  
+  .glass-card {
+    @apply bg-white/60 backdrop-blur-md border border-white/40 shadow-xl;
+  }
+}
+
+@layer utilities {
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  .animate-float-delayed {
+    animation: float 6s ease-in-out 3s infinite;
+  }
+  .animate-fade-in-up {
+    animation: fade-in-up 0.8s ease-out forwards;
+  }
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
+}
