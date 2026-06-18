@@ -102,20 +102,5 @@ export const products: Product[] = [
       "Noix de pécan",
       "Pépites de chocolat au lait"
     ]
-  },
-  {
-    "name": "test",
-    "price": 555,
-    "description": "test",
-    "detailedDescription": "test",
-    "imageUrl": "https://i.postimg.cc/HkBMKZTZ/Capture-d-e-cran-2026-06-12-a-08-59-34.png",
-    "images": [
-      "https://i.postimg.cc/HkBMKZTZ/Capture-d-e-cran-2026-06-12-a-08-59-34.png"
-    ],
-    "ingredients": [
-      "chocolat",
-      "amour"
-    ],
-    "id": "moon-test"
   }
 ];
