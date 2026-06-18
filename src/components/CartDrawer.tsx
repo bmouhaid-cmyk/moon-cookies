@@ -1,6 +1,7 @@
 "use client";
 import { useCartStore } from "@/store/cartStore";
 import { X, Minus, Plus, ShoppingBag } from "lucide-react";
+import { settings } from "@/data/settings";
 
 export default function CartDrawer() {
   const { items, isDrawerOpen, closeDrawer, removeItem, updateQuantity } = useCartStore();
@@ -8,7 +9,7 @@ export default function CartDrawer() {
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   const handleCheckout = () => {
-    const phoneNumber = "212631639229";
+    const phoneNumber = settings.whatsappNumber;
     const header = "Bonjour! Je voudrais commander:\n\n";
     const orderItems = items
       .map((item) => `- ${item.quantity}x ${item.name} (${item.price * item.quantity} DH)`)

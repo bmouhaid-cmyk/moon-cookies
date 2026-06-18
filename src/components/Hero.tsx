@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
+import { settings } from "@/data/settings";
 
 export default function Hero() {
   return (
@@ -20,13 +21,13 @@ export default function Hero() {
           </div>
           
           <h1 className="text-5xl sm:text-6xl lg:text-8xl font-serif text-choco leading-[1.1] mb-6">
-            L'Art du <br className="hidden lg:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-choco to-choco-light font-script text-7xl sm:text-8xl lg:text-[140px] leading-none block -mt-2 lg:-mt-6 mb-4 drop-shadow-sm pb-4">Cookie</span>
-            <span className="italic font-light">Fait Maison</span>
+            {settings.heroTitle1} <br className="hidden lg:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-choco to-choco-light font-script text-7xl sm:text-8xl lg:text-[140px] leading-none block -mt-2 lg:-mt-6 mb-4 drop-shadow-sm pb-4">{settings.heroTitle2}</span>
+            <span className="italic font-light">{settings.heroSubtitle}</span>
           </h1>
           
           <p className="text-lg sm:text-xl text-choco/70 max-w-xl mx-auto lg:mx-0 font-sans leading-relaxed mb-10">
-            Des ingrédients premium, une cuisson parfaite chaque matin. Plongez dans une expérience gourmande inoubliable.
+            {settings.heroDescription}
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6">
@@ -35,7 +36,7 @@ export default function Hero() {
               className="group relative flex items-center justify-center gap-3 bg-choco text-cream font-serif rounded-full px-8 py-4 text-lg overflow-hidden transition-transform hover:scale-105 shadow-xl shadow-choco/20"
             >
               <div className="absolute inset-0 bg-choco-light translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-              <span className="relative z-10">Commander</span>
+              <span className="relative z-10">{settings.heroButtonText}</span>
               <ArrowRight className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             
@@ -62,8 +63,8 @@ export default function Hero() {
             
             <div className="relative w-[120%] h-[120%] lg:w-[130%] lg:h-[130%] animate-float z-10 right-[-5%] sm:right-[-10%]">
               <Image
-                src="/hero-cookie.png"
-                alt="Un délicieux cookie artisanal"
+                src={settings.heroImageUrl}
+                alt={settings.heroTitle2}
                 fill
                 className="object-contain drop-shadow-[0_20px_50px_rgba(97,57,38,0.2)]"
                 priority

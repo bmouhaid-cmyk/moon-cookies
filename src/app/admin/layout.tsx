@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, PlusCircle, LogOut, Cookie } from "lucide-react";
+import { LayoutDashboard, PlusCircle, LogOut, Cookie, Settings } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -52,6 +52,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             <PlusCircle size={20} />
             Ajouter un produit
+          </Link>
+          
+          <Link 
+            href="/admin/settings" 
+            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors font-medium ${
+              pathname === '/admin/settings' 
+                ? 'bg-choco text-cream shadow-md' 
+                : 'text-choco/80 hover:bg-choco/5 hover:text-choco'
+            }`}
+          >
+            <Settings size={20} />
+            Paramètres du site
           </Link>
         </nav>
         
