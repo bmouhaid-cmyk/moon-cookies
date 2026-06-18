@@ -43,7 +43,20 @@ export const products: Product[] = [
       "Extrait de vanille",
       "Fleur de sel"
     ],
-    "detailedIngredients": [],
+    "detailedIngredients": [
+      {
+        "name": "Œufs frais",
+        "imageUrl": ""
+      },
+      {
+        "name": "Beurre doux",
+        "imageUrl": ""
+      },
+      {
+        "name": "Fleur de sel",
+        "imageUrl": ""
+      }
+    ],
     "reheatAdvice": {
       "microwave": "10 à 15 secondes",
       "oven": "3 à 5 minutes à 160°C"
