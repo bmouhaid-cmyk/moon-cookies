@@ -42,7 +42,12 @@ export const products: Product[] = [
       "Chocolat noir 70%",
       "Extrait de vanille",
       "Fleur de sel"
-    ]
+    ],
+    "detailedIngredients": [],
+    "reheatAdvice": {
+      "microwave": "10 à 15 secondes",
+      "oven": "3 à 5 minutes à 160°C"
+    }
   },
   {
     "id": "boite-6",
