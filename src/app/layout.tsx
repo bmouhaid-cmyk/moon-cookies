@@ -3,6 +3,7 @@ import { Playfair_Display, Dancing_Script, Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { settings } from "@/data/settings";
 
 const playfair = Playfair_Display({
@@ -45,6 +46,7 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <CartDrawer />
+        <WhatsAppButton />
       </body>
     </html>
   );
